@@ -1,0 +1,30 @@
+{
+    "name": "rss-file-manager",
+    "version": "1.0.0",
+    "description": "This repository contains all code for RSS-File-Manager task assignment https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/file-manager/assignment.md",
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "type": "module",
+    "scripts": {
+        "cli:args": "node src/cli/args.js --some-arg value1 --other 1337 --arg2 42",
+        "cli:env": "npx cross-env SOME=any RSS_foo=bar RSS_bar=baz node src/cli/env.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ev3rline/RSS-File-Manager"
+    },
+    "keywords": [
+        "nodejs",
+        "file",
+        "manager",
+        "assignments",
+        "ev3rline"
+    ],
+    "author": "ev3rline",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ev3rline/RSS-File-Manager/issues"
+    },
+    "homepage": "https://github.com/ev3rline/RSS-File-Manager#readme"
+}
