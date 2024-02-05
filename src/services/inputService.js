@@ -3,6 +3,7 @@ import * as utils from '../utils/utils.js';
 import * as fmOperations from '../services/fileManagerService.js';
 import * as osOperations from '../services/osManagerService.js';
 import * as hashOperations from '../services/hashManagerService.js';
+import * as zlibOperations from '../services/zlibManagerService.js';
 
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
@@ -73,12 +74,12 @@ export const inputHandler = () => {
                 case "hash":
                     hashOperations.hash(inputValue);
                     break;
-                /* case "compress":
-                    compressFile(inputValue); // 2
+                case "compress":
+                    zlibOperations.compress(inputValue);
                     break;
                 case "decompress":
-                    decompressFile(inputValue); // 2
-                    break; */
+                    zlibOperations.decompress(inputValue);
+                    break;
                 default:
                     errorHandler.invalidInput();
                     break;
