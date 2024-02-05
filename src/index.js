@@ -14,7 +14,6 @@ async function App() {
     pr.on('exit', () => {
         utils.goodbyeMessage(userName);
     })
-    // utils.goodbyeMessage(userName);
 }
 
 App()
