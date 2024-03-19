@@ -1,5 +1,5 @@
 # RSS-File-Manager
-![FMVersion](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
+![FMVersion](https://img.shields.io/badge/version-1.1.3-blue?style=for-the-badge)
 [![NodeJS](https://img.shields.io/badge/node.js-20.11.1-6DA55F?style=for-the-badge&logo=node.js)](https://nodejs.org/docs/latest-v20.x/api/index.html)
 
 [![ES6](https://github.com/MarioTerron/logo-images/blob/master/logos/es6.png)](http://www.ecma-international.org/ecma-262/6.0/)
