@@ -16,13 +16,6 @@ async function App() {
 
     pr.on('exit', () => {
         displayUserMessage(userName, 'goodbye');
-        /* let a = '123 123 123';
-        console.log(colorizeMessage(a, 'red'));
-        console.log(colorizeMessage(a, 'green'));
-        console.log(colorizeMessage(a, 'yellow'));
-        console.log(colorizeMessage(a, 'blue'));
-        console.log(colorizeMessage(a, 'purple'));
-        console.log(colorizeMessage(a, 'cyan')); */
     })
 }
 

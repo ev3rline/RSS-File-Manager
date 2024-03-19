@@ -25,9 +25,6 @@ export const inputHandler = () => {
             const inputValue = input.split(" ");
 
             switch (inputValue[0]) {
-                case '111': // TODO remove before release
-                    console.log(process.cwd());
-                    break;
                 case '.exit':
                     utils.initiateExit();
                     break;
