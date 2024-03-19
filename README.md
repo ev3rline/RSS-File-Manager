@@ -138,7 +138,7 @@ To stop the program, simple type ```.exit``` or press ```ctrl + c``` in console.
 ---
 
 ## License
-![Static Badge](https://img.shields.io/badge/license-mit-green?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/license-isc-green?style=for-the-badge)
 
 **Free Software, Hell Yeah!**
 
