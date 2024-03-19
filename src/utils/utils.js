@@ -1,8 +1,13 @@
-import * as errorHandler from '../services/errorService.js';
+import * as errorHandler from '../handlers/errorHandler.js';
 
-const findArgumentValue = (args, searchString) => {
+const initiateExit = () => {
+    process.exit();
+}
+
+const findArgumentValue = (args, searchString, required = false) => {
     if (!args.length) {
-        throw Error('No arguments were retrieved from CLI!');
+        errorHandler.customErrorMessage('No arguments were retrieved from CLI!');
+        initiateExit();
     }
 
     const argValue = args.find(el =>
@@ -10,22 +15,15 @@ const findArgumentValue = (args, searchString) => {
     )
 
     if (!argValue) {
-        throw Error(`Required argument '${searchString}' was not found!`);
+        if (required) {
+            errorHandler.customErrorMessage(`Required argument '${searchString}' was not found!`);
+            initiateExit();
+        } else {
+            errorHandler.customErrorMessage(`Argument '${searchString}' was not found!`);
+        }
     }
 
     return argValue.split('=').pop();
-}
-
-const welcomeMessage = (username) => {
-    console.log(`Welcome to the File Manager, ${username}!`);
-}
-
-const goodbyeMessage = (username) => {
-    console.log(`Thank you for using File Manager, ${username}, goodbye!`);
-}
-
-const initiateExit = () => {
-    process.exit();
 }
 
 /**
@@ -33,33 +31,22 @@ const initiateExit = () => {
  * as stated in the task for "up" functionality
  * (when you are in the root folder this operation shouldn't change working directory)
  */
-const preventFromExitingRootDirectory = (rootDirectoryPath, targetDirectoryPath) => {
-    let preventFromExiting = false;
-
-    if (!targetDirectoryPath.includes(rootDirectoryPath)) {
-        preventFromExiting = true;
-    }
-
-    return preventFromExiting;
+const isTargetDirectoryOutside = (rootDirectoryPath, targetDirectoryPath) => {
+    return targetDirectoryPath.includes(rootDirectoryPath);
 }
 
 const sortArrayAsc = (a, b) => {
     return a.Name.toLowerCase().localeCompare(b.Name.toLowerCase());
 }
 
-const validateArgsAmount = (args, argsAmount) => {
-    if (!args.length || args.length != argsAmount) {
-        errorHandler.invalidInput();
-        return true;
-    }
+const validateArgsNumber = (args, argsNumber) => {
+    return !args.length || args.length != argsNumber;
 }
 
 export {
     findArgumentValue,
-    welcomeMessage,
-    goodbyeMessage,
     initiateExit,
-    preventFromExitingRootDirectory,
+    isTargetDirectoryOutside,
     sortArrayAsc,
-    validateArgsAmount
+    validateArgsNumber
 }

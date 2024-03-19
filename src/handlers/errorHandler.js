@@ -1,12 +1,26 @@
+import { displayErrorMessage } from '../utils/uiUtils.js';
+import { initiateExit } from '../utils/utils.js';
+
 const invalidInput = () => {
-    console.log('*** Invalid input ***');
+    displayErrorMessage('Invalid input');
 }
 
 const operationFailed = () => {
-    console.log('*** Operation failed ***');
+    displayErrorMessage('Operation failed');
 }
+
+const customErrorMessage = (errorMsg, exitOnError = false) => {
+    displayErrorMessage(errorMsg);
+
+    if (exitOnError) {
+        initiateExit();
+    }
+}
+
+// const
 
 export {
     invalidInput,
-    operationFailed
+    operationFailed,
+    customErrorMessage
 }

@@ -1,4 +1,4 @@
-import * as errorHandler from '../services/errorService.js';
+import * as errorHandler from '../handlers/errorHandler.js';
 import * as utils from '../utils/utils.js'
 
 import fs from 'node:fs';
@@ -6,18 +6,17 @@ import path from 'node:path';
 import pr from 'node:process';
 import str from 'node:stream';
 
-const rootDirectory = path.resolve(pr.cwd(), '..');
+import { DEFAULT_DIRECTORY } from '../config.js';
+
 let currentDirectory;
 
 const up = async () => {
     currentDirectory = pr.cwd();
     const targetDirectory = path.resolve(currentDirectory, '..');
 
-    let preventExitingRootDirectory = utils.preventFromExitingRootDirectory(rootDirectory, targetDirectory);
-    if (preventExitingRootDirectory) {
-        console.log('*** You cannot exit root directory! ***');
-        return;
-    };
+    if (!utils.isTargetDirectoryOutside(DEFAULT_DIRECTORY, targetDirectory)) {
+        return errorHandler.customErrorMessage('You cannot exit root directory');
+    }
 
     try {
         pr.chdir('..');
@@ -29,7 +28,10 @@ const up = async () => {
 const cd = async (args) => {
     args.shift();
 
-    if (utils.validateArgsAmount(args, 1)) return;
+    if (utils.validateArgsNumber(args, 1)) {
+        errorHandler.invalidInput();
+        return;
+    };
 
     let inputPath = args[0].trim();
 
@@ -39,15 +41,15 @@ const cd = async (args) => {
     try {
         const stats = await fs.promises.stat(targetDirectory);
 
-        if (stats.isDirectory()) {
-            let preventExitingRootDirectory = utils.preventFromExitingRootDirectory(rootDirectory, targetDirectory);
-
-            if (preventExitingRootDirectory) {
-                return console.log('*** You cannot exit root directory ***');
-            };
-
-            pr.chdir(inputPath);
+        if (!stats.isDirectory()) {
+            return errorHandler.customErrorMessage('You cannot open file');
         }
+
+        if (!utils.isTargetDirectoryOutside(DEFAULT_DIRECTORY, targetDirectory)) {
+            return errorHandler.customErrorMessage('You cannot exit root directory');
+        }
+
+        pr.chdir(inputPath);
     } catch (error) {
         errorHandler.operationFailed()
     }
@@ -83,18 +85,19 @@ const ls = async () => {
 const cat = async (args) => {
     args.shift();
 
-    if (utils.validateArgsAmount(args, 1)) return;
+    if (utils.validateArgsNumber(args, 1)) {
+        errorHandler.invalidInput();
+        return;
+    };
 
     let inputPath = args[0].trim();
 
     currentDirectory = pr.cwd();
     const targetFilePath = path.resolve(currentDirectory, inputPath);
 
-    let preventExitingRootDirectory = utils.preventFromExitingRootDirectory(rootDirectory, targetFilePath);
-    if (preventExitingRootDirectory) {
-        console.log('*** You cannot read files outside root directory! ***');
-        return;
-    };
+    if (!utils.isTargetDirectoryOutside(DEFAULT_DIRECTORY, targetFilePath)) {
+        return errorHandler.customErrorMessage('You cannot exit root directory');
+    }
 
     try {
         let fileContents = '';
@@ -120,7 +123,10 @@ const cat = async (args) => {
 const add = async (args) => {
     args.shift();
 
-    if (utils.validateArgsAmount(args, 1)) return;
+    if (utils.validateArgsNumber(args, 1)) {
+        errorHandler.invalidInput();
+        return;
+    };
 
     let newFileName = args[0].trim();
 
@@ -137,7 +143,10 @@ const add = async (args) => {
 const rn = async (args) => {
     args.shift();
 
-    if (utils.validateArgsAmount(args, 2)) return;
+    if (utils.validateArgsNumber(args, 2)) {
+        errorHandler.invalidInput();
+        return;
+    };
 
     let inputPath = args[0].trim();
     let newFileName = args[1].trim();
@@ -146,11 +155,9 @@ const rn = async (args) => {
 
     const oldFilePath = path.resolve(currentDirectory, inputPath);
 
-    let preventExitingRootDirectory = utils.preventFromExitingRootDirectory(rootDirectory, oldFilePath);
-    if (preventExitingRootDirectory) {
-        console.log('*** You cannot rename files outside root directory! ***');
-        return;
-    };
+    if (!utils.isTargetDirectoryOutside(DEFAULT_DIRECTORY, oldFilePath)) {
+        return errorHandler.customErrorMessage('You cannot rename files outside root directory');
+    }
 
     const newFilePath = path.resolve(oldFilePath, `../${newFileName}`);
 
@@ -164,7 +171,10 @@ const rn = async (args) => {
 const cp = async (args, isToMoveFile) => {
     args.shift();
 
-    if (utils.validateArgsAmount(args, 2)) return;
+    if (utils.validateArgsNumber(args, 2)) {
+        errorHandler.invalidInput();
+        return;
+    };
 
     let pathToFile = args[0].trim();
     let pathToFileCopy = args[1].trim();
@@ -174,17 +184,13 @@ const cp = async (args, isToMoveFile) => {
     const oldFilePath = path.resolve(currentDirectory, pathToFile);
     const newFilePath = path.resolve(currentDirectory, pathToFileCopy);
 
-    let preventExitingRootDirectory = utils.preventFromExitingRootDirectory(rootDirectory, oldFilePath);
-    if (preventExitingRootDirectory) {
-        console.log('*** You cannot access files out of root directory! ***');
-        return;
-    };
+    if (!utils.isTargetDirectoryOutside(DEFAULT_DIRECTORY, oldFilePath)) {
+        return errorHandler.customErrorMessage('You cannot access files out of root directory');
+    }
 
-    let preventExitingRootDirectoryOnCopy = utils.preventFromExitingRootDirectory(rootDirectory, newFilePath);
-    if (preventExitingRootDirectoryOnCopy) {
-        console.log('*** You cannot create files outside root directory! ***');
-        return;
-    };
+    if (!utils.isTargetDirectoryOutside(DEFAULT_DIRECTORY, newFilePath)) {
+        return errorHandler.customErrorMessage('You cannot create new files out of root directory');
+    }
 
     try {
         const readStream = fs.createReadStream(oldFilePath);
@@ -216,7 +222,10 @@ const mv = async (args) => {
 const rm = async (args) => {
     args.shift();
 
-    if (utils.validateArgsAmount(args, 1)) return;
+    if (utils.validateArgsNumber(args, 1)) {
+        errorHandler.invalidInput();
+        return;
+    };
 
     let pathToFile = args[0].trim();
 
@@ -224,11 +233,9 @@ const rm = async (args) => {
 
     const filePath = path.resolve(currentDirectory, pathToFile);
 
-    let preventExitingRootDirectory = utils.preventFromExitingRootDirectory(rootDirectory, filePath);
-    if (preventExitingRootDirectory) {
-        console.log('*** You cannot access files out of root directory! ***');
-        return;
-    };
+    if (!utils.isTargetDirectoryOutside(DEFAULT_DIRECTORY, filePath)) {
+        return errorHandler.customErrorMessage('You cannot access files out of root directory');
+    }
 
     try {
         await fs.promises.rm(filePath);

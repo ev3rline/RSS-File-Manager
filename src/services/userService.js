@@ -5,7 +5,7 @@ import pr from 'node:process';
 const getUsername = () => {
     const args = pr.argv.slice(2);
 
-    const userNameArgValue = findArgumentValue(args, '--username');
+    const userNameArgValue = findArgumentValue(args, '--username', true);
 
     return userNameArgValue;
 }

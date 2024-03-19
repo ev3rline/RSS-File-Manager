@@ -1,5 +1,6 @@
-import * as errorHandler from '../services/errorService.js'
+import * as errorHandler from '../handlers/errorHandler.js';
 import * as utils from '../utils/utils.js';
+import { displayCurrentLocation } from '../utils/uiUtils.js';
 import * as fmOperations from '../services/fileManagerService.js';
 import * as osOperations from '../services/osManagerService.js';
 import * as hashOperations from '../services/hashManagerService.js';
@@ -9,7 +10,11 @@ import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 
 export const inputHandler = () => {
-    const rl = readline.createInterface({ input, output });
+    const rl = readline.createInterface({
+        input,
+        output,
+        prompt: ''
+    });
 
     try {
         rl.on('SIGINT', () => {
@@ -20,7 +25,7 @@ export const inputHandler = () => {
             const inputValue = input.split(" ");
 
             switch (inputValue[0]) {
-                case '111':
+                case '111': // TODO remove before release
                     console.log(process.cwd());
                     break;
                 case '.exit':
@@ -29,55 +34,58 @@ export const inputHandler = () => {
                 case 'up':
                     await fmOperations.up();
                     break;
-                case "cd":
+                case 'cd':
                     await fmOperations.cd(inputValue);
                     break;
-                case "ls":
+                case 'ls':
                     await fmOperations.ls();
                     break;
-                case "cat":
+                case 'cat':
                     await fmOperations.cat(inputValue);
                     break;
-                case "add":
+                case 'add':
                     await fmOperations.add(inputValue);
                     break;
-                case "rn":
+                case 'rn':
                     await fmOperations.rn(inputValue);
                     break;
-                case "cp":
+                case 'cp':
                     await fmOperations.cp(inputValue);
                     break;
-                case "mv":
+                case 'mv':
                     await fmOperations.mv(inputValue);
                     break;
-                case "rm":
+                case 'rm':
                     await fmOperations.rm(inputValue);
                     break;
-                case "os":
+                case 'os':
                     {
                         switch (inputValue[1]) {
-                            case "--EOL":
+                            case '--EOL':
                                 osOperations.getEOL();
                                 break;
-                            case "--cpus":
+                            case '--cpus':
                                 osOperations.getCPUs();
                                 break;
-                            case "--username":
+                            case '--homedir':
+                                osOperations.getHomeDirectory();
+                                break;
+                            case '--username':
                                 osOperations.getUsername();
                                 break;
-                            case "--architecture":
+                            case '--architecture':
                                 osOperations.getArchitecture();
                                 break;
                         }
                     }
                     break;
-                case "hash":
+                case 'hash':
                     hashOperations.hash(inputValue);
                     break;
-                case "compress":
+                case 'compress':
                     zlibOperations.compress(inputValue);
                     break;
-                case "decompress":
+                case 'decompress':
                     zlibOperations.decompress(inputValue);
                     break;
                 default:
@@ -85,11 +93,11 @@ export const inputHandler = () => {
                     break;
             }
 
-            console.log(`You are currently in ${process.cwd()}`);
+            displayCurrentLocation('You are currently in', process.cwd());
         })
     } catch (err) {
         throw new Error(err);
     } finally {
-        console.log(`You are currently in ${process.cwd()}`);
+        displayCurrentLocation('You are currently in', process.cwd());
     }
 }

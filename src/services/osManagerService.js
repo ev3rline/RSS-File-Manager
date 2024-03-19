@@ -1,4 +1,4 @@
-import os from 'node:os';
+ import os from 'node:os';
 
 const getEOL = () => {
     const currentEOLValue = os.EOL;
@@ -7,17 +7,30 @@ const getEOL = () => {
 
 const getCPUs = () => {
     const currentCPUs = os.cpus();
-    const arr = [];
 
-    for (const cpu of currentCPUs) {
-        let tempObj = {};
-        tempObj.Model = cpu.model;
-        tempObj.Speed = cpu.speed;
-
-        arr.push(tempObj);
+    const columns = {
+        model: 'Model',
+        speed: 'Speed (GHz)'
     }
 
-    console.table([...arr], ['Model', 'Speed']);
+    const transformedData = currentCPUs.map(obj => {
+        let newObj = {};
+        for (let key in obj) {
+            if (key in columns) {
+                newObj[columns[key]] = typeof obj[key] === 'string' ? obj[key].trim() : obj[key];
+            }
+        }
+
+        return newObj;
+    })
+
+    console.table(transformedData);
+    console.log(`Overall number of CPUs: ${transformedData.length}`);
+}
+
+const getHomeDirectory = () => {
+    const homeDir = os.homedir();
+    console.log(homeDir);
 }
 
 const getUsername = () => {
@@ -33,6 +46,7 @@ const getArchitecture = () => {
 export {
     getEOL,
     getCPUs,
+    getHomeDirectory,
     getUsername,
     getArchitecture
 }

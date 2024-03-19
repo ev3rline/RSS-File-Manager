@@ -1,4 +1,4 @@
-import * as errorHandler from '../services/errorService.js';
+import * as errorHandler from '../handlers/errorHandler.js';
 import * as utils from '../utils/utils.js'
 
 import fs from 'node:fs';
