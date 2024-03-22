@@ -4,6 +4,7 @@
 
 [![ES6](https://github.com/MarioTerron/logo-images/blob/master/logos/es6.png)](http://www.ecma-international.org/ecma-262/6.0/)
 
+Developer - [@ev3rline](https://github.com/ev3rline)
 ---
 
 ## Features
